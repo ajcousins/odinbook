@@ -26,11 +26,11 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Please provide a password"],
-    minlength: 8,
   },
   joinedDate: {
     type: Date,
     required: [true, "A user must have a joined date"],
+    default: Date.now(),
   },
   bio: {
     type: String,
