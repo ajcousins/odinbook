@@ -7,7 +7,7 @@ const compression = require("compression");
 const helmet = require("helmet");
 
 const userRouter = require("./routes/userRouter");
-const messageRouter = require("./routes/messageRouter");
+const tweetRouter = require("./routes/tweetRouter");
 
 const app = express();
 
@@ -43,6 +43,6 @@ app.route("/").get((req, res) => {
 });
 
 app.use("/api/v1/users", userRouter);
-// app.use("/api/v1/messages", messageRouter);
+app.use("/api/v1/tweets", tweetRouter);
 
 module.exports = app;

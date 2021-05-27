@@ -1,26 +1,26 @@
-const User = require("./../models/userModel");
+const Tweet = require("../models/tweetModel");
 
 // GET ALL
-exports.getAllUsers = async (req, res) => {
-  const users = await User.find();
+exports.getAllTweets = async (req, res) => {
+  const tweets = await Tweet.find();
 
   res.status(200).json({
     status: "Success",
     data: {
-      users,
+      tweets,
     },
   });
 };
 
 // GET ONE
-exports.getUser = async (req, res) => {
+exports.getTweet = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const tweet = await Tweet.findById(req.params.id);
 
     res.status(200).json({
       status: "Success",
       data: {
-        user,
+        tweet,
       },
     });
   } catch (err) {
@@ -33,14 +33,14 @@ exports.getUser = async (req, res) => {
 };
 
 // CREATE ONE
-exports.createUser = async (req, res) => {
+exports.createTweet = async (req, res) => {
   try {
-    const newUser = await User.create(req.body);
+    const newTweet = await Tweet.create(req.body);
 
     res.status(201).json({
       status: "Success",
       data: {
-        user: newUser,
+        tweet: newTweet,
       },
     });
   } catch (err) {
@@ -53,17 +53,21 @@ exports.createUser = async (req, res) => {
 };
 
 // UPDATE ONE
-exports.updateUser = async (req, res) => {
+exports.updateTweet = async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const updatedTweet = await Tweet.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     res.status(201).json({
       status: "Success",
       data: {
-        updatedUser,
+        updatedTweet,
       },
     });
   } catch (err) {
@@ -76,9 +80,9 @@ exports.updateUser = async (req, res) => {
 };
 
 // DELETE ONE
-exports.deleteUser = async (req, res) => {
+exports.deleteTweet = async (req, res) => {
   try {
-    await User.findByIdAndDelete(req.params.id);
+    await Tweet.findByIdAndDelete(req.params.id);
 
     res.status(201).json({
       status: "Success",
