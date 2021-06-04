@@ -12,6 +12,8 @@ const globalErrorHandler = require("./controllers/errorController");
 const userRouter = require("./routes/userRouter");
 const tweetRouter = require("./routes/tweetRouter");
 
+const authController = require("./controllers/authController");
+
 // MIDDLEWARE
 const app = express();
 if (process.env.NODE_ENV === "development") {
@@ -46,9 +48,14 @@ app.use((req, res, next) => {
 
 // ROUTES
 
-// // Temporary redirect
-// app.route("/").get((req, res) => {
-//   res.redirect("/api/v1/users");
+// Temporary root. Check login/ token. Redirect to get all users.
+app.route("/users/").get(authController.protect, (req, res) => {
+  res.redirect("/api/v1/tweets");
+});
+
+// // Temporary root.
+// app.route("/users/").get((req, res) => {
+//   res.send({ message: "API is working! Testing test 123." });
 // });
 
 app.use("/api/v1/users", userRouter);
