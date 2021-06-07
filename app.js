@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const AppError = require("./utils/appError");
 const compression = require("compression");
 const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
 
 const globalErrorHandler = require("./controllers/errorController");
 
@@ -39,8 +40,11 @@ app.use(compression());
 //   next();
 // });
 
+app.use(cookieParser());
+
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  console.log(req.cookies);
   next();
 });
 
@@ -49,7 +53,7 @@ app.use((req, res, next) => {
 // ROUTES
 
 // Temporary root. Check login/ token. Redirect to get all users.
-app.route("/users/").get(authController.protect, (req, res) => {
+app.route("/tweets/").get(authController.protect, (req, res) => {
   res.redirect("/api/v1/tweets");
 });
 

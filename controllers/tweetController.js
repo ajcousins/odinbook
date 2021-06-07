@@ -1,8 +1,9 @@
 const Tweet = require("../models/tweetModel");
+const User = require("../models/userModel");
 
 // GET ALL
 exports.getAllTweets = async (req, res) => {
-  const tweets = await Tweet.find();
+  const tweets = await Tweet.find().populate("user");
 
   res.status(200).json({
     status: "Success",
