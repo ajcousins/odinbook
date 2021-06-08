@@ -35,7 +35,7 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  console.log("Here");
+  // console.log("Here");
   const newUser = await User.create({
     name: req.body.name,
     handle: req.body.handle,
@@ -112,6 +112,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // Grant access to protected route.
   req.user = currentUser;
+  req.currentUser = decoded.id;
   next();
 });
 
@@ -132,6 +133,7 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
     }
 
     res.locals.user = currentUser;
+    req.currentUser = decoded.id;
     next();
   }
   next();

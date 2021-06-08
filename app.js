@@ -15,6 +15,9 @@ const tweetRouter = require("./routes/tweetRouter");
 
 const authController = require("./controllers/authController");
 
+const { promisify } = require("util");
+const jwt = require("jsonwebtoken");
+
 // MIDDLEWARE
 const app = express();
 if (process.env.NODE_ENV === "development") {
@@ -52,10 +55,22 @@ app.use((req, res, next) => {
 
 // ROUTES
 
-// Temporary root. Check login/ token. Redirect to get all users.
-app.route("/tweets/").get(authController.protect, (req, res) => {
-  res.redirect("/api/v1/tweets");
-});
+// // Temporary root. Check login/ token. Redirect to get all users.
+// app.route("/tweets/").get(authController.protect, (req, res) => {
+//   res.redirect("/api/v1/tweets");
+// });
+
+app.use("/tweets/", authController.protect, tweetRouter);
+
+// // Add current user from jwt/cookie to req obj
+// app.use(async (req, res, next) => {
+//   const decoded = await promisify(jwt.verify)(
+//     req.cookies.jwt,
+//     process.env.JWT_SECRET
+//   );
+//   req.currentUser = decoded.id;
+//   next();
+// });
 
 // // Temporary root.
 // app.route("/users/").get((req, res) => {
