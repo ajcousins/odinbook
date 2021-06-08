@@ -1,7 +1,4 @@
-// const path = require("path");
 const express = require("express");
-// const session = require("express-session");
-// const passport = require("passport");
 const morgan = require("morgan");
 const AppError = require("./utils/appError");
 const compression = require("compression");
@@ -14,9 +11,6 @@ const userRouter = require("./routes/userRouter");
 const tweetRouter = require("./routes/tweetRouter");
 
 const authController = require("./controllers/authController");
-
-const { promisify } = require("util");
-const jwt = require("jsonwebtoken");
 
 // MIDDLEWARE
 const app = express();
@@ -55,27 +49,8 @@ app.use((req, res, next) => {
 
 // ROUTES
 
-// // Temporary root. Check login/ token. Redirect to get all users.
-// app.route("/tweets/").get(authController.protect, (req, res) => {
-//   res.redirect("/api/v1/tweets");
-// });
-
+// Protected route- adds currentUser to req object at authController.
 app.use("/tweets/", authController.protect, tweetRouter);
-
-// // Add current user from jwt/cookie to req obj
-// app.use(async (req, res, next) => {
-//   const decoded = await promisify(jwt.verify)(
-//     req.cookies.jwt,
-//     process.env.JWT_SECRET
-//   );
-//   req.currentUser = decoded.id;
-//   next();
-// });
-
-// // Temporary root.
-// app.route("/users/").get((req, res) => {
-//   res.send({ message: "API is working! Testing test 123." });
-// });
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/tweets", tweetRouter);

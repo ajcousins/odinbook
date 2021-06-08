@@ -72,6 +72,16 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 201, res);
 });
 
+// Logout route: sends a blank 'jwt' cookie which overrides the existing cookie in the browser.
+// Short expiration (10 seconds). Effectively logs user out.
+exports.logout = (req, res) => {
+  res.cookie("jwt", "loggedout", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ status: "success" });
+};
+
 //Middleware function to check login/ token
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check if it's there.
@@ -133,6 +143,8 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
     }
 
     res.locals.user = currentUser;
+
+    // Add user id so that it's available to React frontend. Added to res object where required in controllers.
     req.currentUser = decoded.id;
     next();
   }
