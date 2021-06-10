@@ -122,7 +122,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // Grant access to protected route.
   req.user = currentUser;
-  req.currentUser = decoded.id;
+  // req.currentUser = decoded.id;
   next();
 });
 
@@ -145,7 +145,7 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
     res.locals.user = currentUser;
 
     // Add user id so that it's available to React frontend. Added to res object where required in controllers.
-    req.currentUser = decoded.id;
+    // req.currentUser = decoded.id;
     next();
   }
   next();

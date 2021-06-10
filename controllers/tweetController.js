@@ -4,7 +4,9 @@ const User = require("../models/userModel");
 // GET ALL
 exports.getAllTweets = async (req, res) => {
   const tweets = await Tweet.find().sort("-dateAdded").populate("user");
-  const currentUser = req.currentUser;
+  // const currentUser = req.currentUser;
+  const currentUser = req.user;
+  console.log("currentUser:", currentUser);
 
   res.status(200).json({
     status: "Success",
