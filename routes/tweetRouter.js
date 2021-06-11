@@ -14,4 +14,6 @@ router
   .patch(tweetController.updateTweet)
   .delete(tweetController.deleteTweet);
 
+router.route("/user/:userId").get(tweetController.getTweetsByUser);
+
 module.exports = router;

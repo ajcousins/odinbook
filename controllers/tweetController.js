@@ -17,6 +17,21 @@ exports.getAllTweets = async (req, res) => {
   });
 };
 
+// GET TWEETS BY USER
+exports.getTweetsByUser = async (req, res) => {
+  const userTweets = await Tweet.find({
+    user: req.params.userId,
+  })
+    .sort("-dateAdded")
+    .populate("user");
+
+  res.status(200).json({
+    status: "Success",
+    user: req.params.userId,
+    userTweets,
+  });
+};
+
 // GET ONE
 exports.getTweet = async (req, res) => {
   try {
