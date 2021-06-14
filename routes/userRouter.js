@@ -19,4 +19,10 @@ router
   .patch(userController.updateUser)
   .delete(userController.deleteUser);
 
+router.route("/follow").post(authController.protect, userController.followUser);
+
+router
+  .route("/unfollow")
+  .post(authController.protect, userController.unfollowUser);
+
 module.exports = router;

@@ -91,3 +91,94 @@ exports.deleteUser = async (req, res) => {
     });
   }
 };
+
+// FOLLOW USER
+exports.followUser = async (req, res) => {
+  try {
+    const currentUser = req.user;
+    const userToFollow = req.body.userToFollow;
+
+    // $addToSet NOT $push... to ensure unique id.
+    const updatedUser = await User.findByIdAndUpdate(
+      currentUser._id,
+      {
+        $addToSet: { following: userToFollow },
+      },
+      { new: true }
+    );
+
+    const userBeingFollowed = await User.findByIdAndUpdate(
+      userToFollow,
+      {
+        $addToSet: { followers: currentUser._id },
+      },
+      { new: true }
+    );
+
+    res.status(201).json({
+      status: "Success",
+      updatedUser: {
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        following: updatedUser.following,
+      },
+      userBeingFollowed: {
+        _id: userBeingFollowed._id,
+        name: userBeingFollowed.name,
+        followers: userBeingFollowed.followers,
+      },
+      // updatedUser,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Invalid data sent",
+      error: err,
+    });
+  }
+};
+
+// UNFOLLOW USER
+exports.unfollowUser = async (req, res) => {
+  try {
+    const currentUser = req.user;
+    const userToUnfollow = req.body.userToUnfollow;
+
+    // $addToSet NOT $push... to ensure unique id.
+    const updatedUser = await User.findByIdAndUpdate(
+      currentUser._id,
+      {
+        $pull: { following: userToUnfollow },
+      },
+      { new: true }
+    );
+
+    const userBeingUnfollowed = await User.findByIdAndUpdate(
+      userToUnfollow,
+      {
+        $pull: { followers: currentUser._id },
+      },
+      { new: true }
+    );
+
+    res.status(201).json({
+      status: "Success",
+      updatedUser: {
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        following: updatedUser.following,
+      },
+      userBeingUnfollowed: {
+        _id: userBeingUnfollowed._id,
+        name: userBeingUnfollowed.name,
+        followers: userBeingUnfollowed.followers,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Invalid data sent",
+      error: err,
+    });
+  }
+};
