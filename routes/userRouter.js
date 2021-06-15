@@ -25,4 +25,12 @@ router
   .route("/unfollow")
   .post(authController.protect, userController.unfollowUser);
 
+router
+  .route("/:id/followers")
+  .get(authController.protect, userController.followersList);
+
+router
+  .route("/:id/following")
+  .get(authController.protect, userController.followingList);
+
 module.exports = router;

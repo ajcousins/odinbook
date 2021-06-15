@@ -1,3 +1,4 @@
+const { findById } = require("./../models/userModel");
 const User = require("./../models/userModel");
 
 // GET ALL
@@ -173,6 +174,50 @@ exports.unfollowUser = async (req, res) => {
         name: userBeingUnfollowed.name,
         followers: userBeingUnfollowed.followers,
       },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Invalid data sent",
+      error: err,
+    });
+  }
+};
+
+// GET FOLLOWERS LIST
+exports.followersList = async (req, res) => {
+  const selectedUser = await User.findById(req.params.id);
+  const followersInfo = await User.find()
+    .where("_id")
+    .in(selectedUser.followers)
+    .exec();
+
+  try {
+    res.status(201).json({
+      status: "Success",
+      followersInfo,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Invalid data sent",
+      error: err,
+    });
+  }
+};
+
+// GET FOLLOWING LIST
+exports.followingList = async (req, res) => {
+  const selectedUser = await User.findById(req.params.id);
+  const followingInfo = await User.find()
+    .where("_id")
+    .in(selectedUser.following)
+    .exec();
+
+  try {
+    res.status(201).json({
+      status: "Success",
+      followingInfo,
     });
   } catch (err) {
     res.status(400).json({
