@@ -14,6 +14,10 @@ router
   .post(userController.createUser);
 
 router
+  .route("/current")
+  .get(authController.protect, userController.currentUser);
+
+router
   .route("/:id")
   .get(userController.getUser)
   .patch(userController.updateUser)

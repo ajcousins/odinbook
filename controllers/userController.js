@@ -13,6 +13,25 @@ exports.getAllUsers = async (req, res) => {
   });
 };
 
+exports.currentUser = (req, res) => {
+  try {
+    const currentUser = req.user;
+
+    res.status(200).json({
+      status: "Success",
+      data: {
+        currentUser,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Invalid data sent",
+      error: err,
+    });
+  }
+};
+
 // GET ONE
 exports.getUser = async (req, res) => {
   try {
