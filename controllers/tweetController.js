@@ -3,10 +3,23 @@ const User = require("../models/userModel");
 
 // GET ALL
 exports.getAllTweets = async (req, res) => {
-  const tweets = await Tweet.find().sort("-dateAdded").populate("user");
-  // const currentUser = req.currentUser;
   const currentUser = req.user;
   console.log("currentUser:", currentUser);
+
+  // // Get all tweets from ALL users. Temporary.
+  // const tweets = await Tweet.find().sort("-dateAdded").populate("user");
+
+  // Get all tweets from users being followed by currentUser.
+  const broadcast = currentUser.following;
+  // Include currentUser's ID in list
+  broadcast.push(currentUser._id);
+
+  const tweets = await Tweet.find()
+    .where("user")
+    .in(broadcast)
+    .sort("-dateAdded")
+    .populate("user")
+    .exec();
 
   res.status(200).json({
     status: "Success",
