@@ -26,10 +26,7 @@ const tweetSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    likes: {
-      type: Number,
-      default: 0,
-    },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   {
     toJSON: { virtuals: true },
@@ -74,9 +71,9 @@ tweetSchema.virtual("retweets_short").get(function () {
   return numberFormat(this.retweets);
 });
 
-tweetSchema.virtual("likes_short").get(function () {
-  return numberFormat(this.likes);
-});
+// tweetSchema.virtual("likes_short").get(function () {
+//   return numberFormat(this.likes);
+// });
 
 const numberFormat = (prop) => {
   let quantity = prop;

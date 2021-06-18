@@ -59,6 +59,7 @@ const userSchema = new mongoose.Schema(
     photo: {
       type: String,
     },
+    likedTweets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tweet" }],
   },
   {
     toJSON: { virtuals: true },

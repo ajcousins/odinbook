@@ -128,3 +128,82 @@ exports.deleteTweet = async (req, res) => {
     });
   }
 };
+
+// LIKE TWEET
+exports.likeTweet = async (req, res) => {
+  try {
+    const currentUserId = req.user._id;
+    const tweetId = req.params.id;
+
+    console.log("currentUserID", currentUserId);
+    console.log("tweetId", tweetId);
+
+    // Add tweet to user's list of likes
+    const updatedUser = await User.findByIdAndUpdate(
+      currentUserId,
+      {
+        $addToSet: { likedTweets: tweetId },
+      },
+      { new: true }
+    );
+
+    // Add user to tweet's list of users
+    const updatedTweet = await Tweet.findByIdAndUpdate(
+      tweetId,
+      {
+        $addToSet: { likes: currentUserId },
+      },
+      { new: true }
+    );
+    // 'likes' property already existed in Tweet Model as a 'number' type instead of an array.
+    // Wasn't able to add to set. Had to manually delete the field in mongo, before adding here.
+
+    res.status(201).json({
+      status: "Success",
+      updatedUser,
+      updatedTweet,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Invalid data sent",
+      error: err,
+    });
+  }
+};
+
+// LIKE TWEET
+exports.unlikeTweet = async (req, res) => {
+  try {
+    const currentUserId = req.user._id;
+    const tweetId = req.params.id;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      currentUserId,
+      {
+        $pull: { likedTweets: tweetId },
+      },
+      { new: true }
+    );
+
+    const updatedTweet = await Tweet.findByIdAndUpdate(
+      tweetId,
+      {
+        $pull: { likes: currentUserId },
+      },
+      { new: true }
+    );
+
+    res.status(201).json({
+      status: "Success",
+      updatedUser,
+      updatedTweet,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Invalid data sent",
+      error: err,
+    });
+  }
+};
