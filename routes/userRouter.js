@@ -1,4 +1,5 @@
 const express = require("express");
+
 const userController = require("./../controllers/userController");
 const authController = require("./../controllers/authController");
 
@@ -36,5 +37,14 @@ router
 router
   .route("/:id/following")
   .get(authController.protect, userController.followingList);
+
+router
+  .route("/updateUser")
+  .post(
+    authController.protect,
+    userController.uploadUserPhoto,
+    userController.resizeUserPhoto,
+    userController.updateUser
+  );
 
 module.exports = router;

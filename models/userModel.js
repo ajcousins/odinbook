@@ -58,6 +58,7 @@ const userSchema = new mongoose.Schema(
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     photo: {
       type: String,
+      default: "default.jpg",
     },
     likedTweets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tweet" }],
   },
