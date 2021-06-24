@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 1,
-      maxlength: 20,
+      maxlength: 35,
     },
     handle: {
       type: String,
@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema(
     },
     bio: {
       type: String,
-      maxlength: 280,
+      maxlength: 160,
     },
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
