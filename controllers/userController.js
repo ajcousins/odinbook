@@ -6,18 +6,6 @@ const AppError = require("../utils/appError");
 const { findById } = require("./../models/userModel");
 const User = require("./../models/userModel");
 
-// // Save file in filesystem, not in memory.
-// const multerStorage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "public/img/users");
-//   },
-//   filename: (req, file, cb) => {
-//     // user-id-timestamp.jpeg
-//     const ext = file.mimetype.split("/")[1];
-//     cb(null, `user-${req.user._id}-${Date.now()}.${ext}`);
-//   },
-// });
-
 // Uploaded saved into memory as buffer. Accessible at req.file.buffer.
 const multerStorage = multer.memoryStorage();
 
@@ -369,6 +357,43 @@ exports.redundantPhotos = async (req, res) => {
 
     res.status(201).json({
       status: "Success",
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Invalid data sent",
+      error: err,
+    });
+  }
+};
+
+// WHO TO FOLLOW
+// Get users that are not followed by currentUser. Order by activity (followers * tweets), limit by 5.
+exports.whoToFollow = async (req, res) => {
+  try {
+    const currentUser = req.user;
+
+    const allUsers = await User.find().select(
+      "-joinedDate -likedTweets -email"
+    );
+
+    // Remove users already being followed and currentUser
+    const notFollowing = await allUsers.filter((user) => {
+      return !(
+        currentUser.following.includes(user._id) ||
+        String(user._id).valueOf() === String(currentUser._id).valueOf()
+      );
+    });
+
+    // Reorder by followers.
+    // Limit by 5.
+
+    res.status(201).json({
+      status: "Success",
+      currentUserId: currentUser._id,
+      // following: currentUser.following,
+      // allUsers,
+      notFollowing,
     });
   } catch (err) {
     res.status(400).json({

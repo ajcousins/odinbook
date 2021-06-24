@@ -18,6 +18,8 @@ router
   .route("/current")
   .get(authController.protect, userController.currentUser);
 
+router.get("/whoToFollow", authController.protect, userController.whoToFollow);
+
 router
   .route("/:id")
   .get(userController.getUser)
