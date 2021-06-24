@@ -47,4 +47,6 @@ router
     userController.updateUser
   );
 
+router.route("/redundantPhotos").post(userController.redundantPhotos);
+
 module.exports = router;

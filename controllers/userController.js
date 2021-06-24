@@ -1,3 +1,5 @@
+const path = require("path");
+const fs = require("fs");
 const multer = require("multer");
 const sharp = require("sharp");
 const AppError = require("../utils/appError");
@@ -331,6 +333,42 @@ exports.updateUser = async (req, res, next) => {
       data: {
         user: updatedUser,
       },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Invalid data sent",
+      error: err,
+    });
+  }
+};
+
+// Delete all redundant profile photos in filesystem
+exports.redundantPhotos = async (req, res) => {
+  try {
+    const allUsers = await User.find();
+    const photosInUse = allUsers.map((user) => user.photo);
+
+    const directoryPath = path.join(__dirname, "./../public/img/users");
+    fs.readdir(directoryPath, (err, files) => {
+      if (err) {
+        return console.log("Unable to scan directory: ", err);
+      }
+      files.forEach((file) => {
+        if (photosInUse.includes(file)) return;
+        if (file === "default.jpg") return;
+        else {
+          console.log(file);
+          fs.unlink(`${directoryPath}/${file}`, (err) => {
+            if (err) throw err;
+            console.log(file, "deleted");
+          });
+        }
+      });
+    });
+
+    res.status(201).json({
+      status: "Success",
     });
   } catch (err) {
     res.status(400).json({
