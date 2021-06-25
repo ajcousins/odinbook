@@ -6,7 +6,7 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(tweetController.getAllTweets)
+  .get(authController.protect, tweetController.getAllTweets)
   .post(tweetController.createTweet);
 
 router

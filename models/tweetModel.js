@@ -18,16 +18,20 @@ const tweetSchema = new mongoose.Schema(
       required: [true, "An item must have a dateAdded"],
       default: Date.now,
     },
-    replies: {
-      type: Number,
-      default: 0,
-    },
-    retweets: {
-      type: Number,
-      default: 0,
-    },
+
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    replyParent: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tweet",
+    },
+    replies: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tweet",
+      },
+    ],
   },
+
   {
     toJSON: { virtuals: true },
   }
