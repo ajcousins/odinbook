@@ -374,26 +374,32 @@ exports.whoToFollow = async (req, res) => {
     const currentUser = req.user;
 
     const allUsers = await User.find().select(
-      "-joinedDate -likedTweets -email"
+      "-joinedDate -likedTweets -email -bio"
     );
 
-    // Remove users already being followed and currentUser
-    const notFollowing = await allUsers.filter((user) => {
-      return !(
-        currentUser.following.includes(user._id) ||
-        String(user._id).valueOf() === String(currentUser._id).valueOf()
-      );
-    });
+    const whoToFollow = await allUsers
+      // Remove users already being followed and currentUser
+      .filter((user) => {
+        return !(
+          currentUser.following.includes(user._id) ||
+          String(user._id).valueOf() === String(currentUser._id).valueOf()
+        );
+      })
 
-    // Reorder by followers.
-    // Limit by 5.
+      // Sort by number of followers.
+      .sort((a, b) => {
+        if (a.followers.length > b.followers.length) return -1;
+        if (a.followers.length < b.followers.length) return 1;
+        else return 0;
+      })
+
+      // Limit by 10.
+      .slice(0, 10);
 
     res.status(201).json({
       status: "Success",
       currentUserId: currentUser._id,
-      // following: currentUser.following,
-      // allUsers,
-      notFollowing,
+      whoToFollow,
     });
   } catch (err) {
     res.status(400).json({
