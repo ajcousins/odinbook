@@ -17,6 +17,8 @@ exports.getAllTweets = async (req, res) => {
   const tweets = await Tweet.find()
     .where("user")
     .in(broadcast)
+    .where("replyParent")
+    .equals(null)
     .sort("-dateAdded")
     .populate("user")
     .exec();
@@ -125,10 +127,26 @@ exports.updateTweet = async (req, res) => {
 // DELETE ONE
 exports.deleteTweet = async (req, res) => {
   try {
+    // Check if tweet has a replyParent.
+    const tweet = await Tweet.findById(req.params.id);
+    console.log(tweet.replyParent);
+
+    const parent = await Tweet.findByIdAndUpdate(
+      tweet.replyParent,
+      {
+        $pull: {
+          replies: req.params.id,
+        },
+      },
+      { new: true }
+    );
+
     await Tweet.findByIdAndDelete(req.params.id);
 
     res.status(201).json({
       status: "Success",
+      tweet,
+      parent,
     });
   } catch (err) {
     res.status(400).json({
@@ -217,3 +235,50 @@ exports.unlikeTweet = async (req, res) => {
     });
   }
 };
+
+// GET REPLIES
+exports.getReplies = async (req, res) => {
+  const replyParent = req.params.id;
+
+  const tweets = await Tweet.find()
+    .where("replyParent")
+    .equals(replyParent)
+    .sort("-dateAdded")
+    .populate("user")
+    .exec();
+
+  res.status(200).json({
+    status: "Success",
+    data: {
+      tweets,
+    },
+  });
+};
+
+// // DELETE ONE
+// exports.deleteReply = async (req, res) => {
+//   try {
+//     await Tweet.findByIdAndDelete(req.params.id);
+
+//     // Remove from tweetParent array
+//     const tweetParent = await Tweet.findByIdAndUpdate(
+//       req.body.replyParent,
+//       {
+//         $addToSet: {
+//           replies: newTweet._id,
+//         },
+//       },
+//       { new: true }
+//     );
+
+//     res.status(201).json({
+//       status: "Success",
+//     });
+//   } catch (err) {
+//     res.status(400).json({
+//       status: "Fail",
+//       message: "Invalid data sent",
+//       error: err,
+//     });
+//   }
+// };

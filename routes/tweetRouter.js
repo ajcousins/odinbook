@@ -15,6 +15,11 @@ router
   .patch(tweetController.updateTweet)
   .delete(tweetController.deleteTweet);
 
+router
+  .route("/:id/replies")
+  .get(authController.protect, tweetController.getReplies);
+// .delete(authController.protect, tweetController.deleteReply);
+
 router.route("/user/:userId").get(tweetController.getTweetsByUser);
 
 router
