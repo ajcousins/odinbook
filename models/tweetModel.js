@@ -84,6 +84,15 @@ const numberFormat = (prop) => {
   return quantity > 999 ? Math.floor(quantity / 1000) + "K" : quantity;
 };
 
+// Time tweeted
+tweetSchema.virtual("dateAdded_expand").get(function () {
+  return (
+    DateTime.fromJSDate(this.dateAdded).toLocaleString(DateTime.TIME_SIMPLE) +
+    " · " +
+    DateTime.fromJSDate(this.dateAdded).toLocaleString(DateTime.DATE_MED)
+  );
+});
+
 const Tweet = mongoose.model("Tweet", tweetSchema);
 
 module.exports = Tweet;
