@@ -69,11 +69,21 @@ exports.getTweet = async (req, res) => {
 exports.createTweet = async (req, res) => {
   try {
     const newTweet = await Tweet.create(req.body);
+    const tweetParent = await Tweet.findByIdAndUpdate(
+      req.body.replyParent,
+      {
+        $addToSet: {
+          replies: newTweet._id,
+        },
+      },
+      { new: true }
+    );
 
     res.status(201).json({
       status: "Success",
       data: {
         tweet: newTweet,
+        tweetParent,
       },
     });
   } catch (err) {
