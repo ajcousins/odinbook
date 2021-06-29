@@ -40,7 +40,9 @@ exports.getTweetsByUser = async (req, res) => {
     user: req.params.userId,
   })
     .sort("-dateAdded")
-    .populate("user");
+    .populate("user")
+    .populate({ path: "retweetChild", populate: { path: "user" } })
+    .exec();
 
   res.status(200).json({
     status: "Success",
@@ -72,16 +74,25 @@ exports.getTweet = async (req, res) => {
 // CREATE ONE
 exports.createTweet = async (req, res) => {
   try {
-    // Is the new tweet a retweet? Is there a 'retweetChild'?
+    // Is the new tweet a retweet? Is there a 'retweetChild' in req.body?
     if (req.body.retweetChild) {
       // RETWEET
       const newTweet = await Tweet.create(req.body);
+
+      // Add new tweet (parent) id to replies array of child.
+      const updatedTweet = await Tweet.findByIdAndUpdate(
+        req.body.retweetChild,
+        {
+          $addToSet: { retweets: newTweet._id },
+        },
+        { new: true }
+      );
 
       res.status(201).json({
         status: "Success. Retweet",
         data: {
           tweet: newTweet,
-          // tweetParent,
+          parent: updatedTweet,
         },
       });
     } else {
@@ -260,7 +271,7 @@ exports.getReplies = async (req, res) => {
   const tweets = await Tweet.find()
     .where("replyParent")
     .equals(replyParent)
-    .sort("-dateAdded")
+    .sort("dateAdded")
     .populate("user")
     .exec();
 
@@ -271,18 +282,3 @@ exports.getReplies = async (req, res) => {
     },
   });
 };
-
-// // RETWEET
-// exports.retweet = async (req, res) => {
-//   try {
-//     res.status(201).json({
-//       status: "Success",
-//     });
-//   } catch (err) {
-//     res.status(400).json({
-//       status: "Fail",
-//       message: "Invalid data sent",
-//       error: err,
-//     });
-//   }
-// };
