@@ -21,6 +21,8 @@ exports.getAllTweets = async (req, res) => {
     .equals(null)
     .sort("-dateAdded")
     .populate("user")
+    .populate({ path: "retweetChild", populate: { path: "user" } })
+    // .populate("retweetChild")
     .exec();
 
   res.status(200).json({
@@ -70,24 +72,39 @@ exports.getTweet = async (req, res) => {
 // CREATE ONE
 exports.createTweet = async (req, res) => {
   try {
-    const newTweet = await Tweet.create(req.body);
-    const tweetParent = await Tweet.findByIdAndUpdate(
-      req.body.replyParent,
-      {
-        $addToSet: {
-          replies: newTweet._id,
-        },
-      },
-      { new: true }
-    );
+    // Is the new tweet a retweet? Is there a 'retweetChild'?
+    if (req.body.retweetChild) {
+      // RETWEET
+      const newTweet = await Tweet.create(req.body);
 
-    res.status(201).json({
-      status: "Success",
-      data: {
-        tweet: newTweet,
-        tweetParent,
-      },
-    });
+      res.status(201).json({
+        status: "Success. Retweet",
+        data: {
+          tweet: newTweet,
+          // tweetParent,
+        },
+      });
+    } else {
+      // NORMAL TWEET
+      const newTweet = await Tweet.create(req.body);
+      const replyParent = await Tweet.findByIdAndUpdate(
+        req.body.replyParent,
+        {
+          $addToSet: {
+            replies: newTweet._id,
+          },
+        },
+        { new: true }
+      );
+
+      res.status(201).json({
+        status: "Success",
+        data: {
+          tweet: newTweet,
+          replyParent,
+        },
+      });
+    }
   } catch (err) {
     res.status(400).json({
       status: "Fail",
@@ -255,22 +272,9 @@ exports.getReplies = async (req, res) => {
   });
 };
 
-// // DELETE ONE
-// exports.deleteReply = async (req, res) => {
+// // RETWEET
+// exports.retweet = async (req, res) => {
 //   try {
-//     await Tweet.findByIdAndDelete(req.params.id);
-
-//     // Remove from tweetParent array
-//     const tweetParent = await Tweet.findByIdAndUpdate(
-//       req.body.replyParent,
-//       {
-//         $addToSet: {
-//           replies: newTweet._id,
-//         },
-//       },
-//       { new: true }
-//     );
-
 //     res.status(201).json({
 //       status: "Success",
 //     });

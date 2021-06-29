@@ -5,7 +5,6 @@ const tweetSchema = new mongoose.Schema(
   {
     textContent: {
       type: String,
-      required: true,
       maxlength: 280,
     },
     user: {
@@ -30,6 +29,10 @@ const tweetSchema = new mongoose.Schema(
         ref: "Tweet",
       },
     ],
+    retweetChild: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tweet",
+    },
   },
 
   {

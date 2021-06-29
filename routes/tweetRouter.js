@@ -30,4 +30,6 @@ router
   .route("/:id/unlike")
   .patch(authController.protect, tweetController.unlikeTweet);
 
+// router.route("/retweet").post(authController.project, tweetController.retweet);
+
 module.exports = router;
