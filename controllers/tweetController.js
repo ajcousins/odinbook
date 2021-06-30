@@ -76,14 +76,23 @@ exports.createTweet = async (req, res) => {
   try {
     // Is the new tweet a retweet? Is there a 'retweetChild' in req.body?
     if (req.body.retweetChild) {
+      const currentUserId = req.user._id;
+
+      // Add tweet to user's list of retweets
+      const updatedUser = await User.findByIdAndUpdate(
+        currentUserId,
+        { $addToSet: { retweetedTweets: req.body.retweetChild } },
+        { new: true }
+      );
+
       // RETWEET
       const newTweet = await Tweet.create(req.body);
 
-      // Add new tweet (parent) id to replies array of child.
+      // Add user id to retweet array of child.
       const updatedTweet = await Tweet.findByIdAndUpdate(
         req.body.retweetChild,
         {
-          $addToSet: { retweets: newTweet._id },
+          $addToSet: { retweets: currentUserId },
         },
         { new: true }
       );
@@ -92,7 +101,7 @@ exports.createTweet = async (req, res) => {
         status: "Success. Retweet",
         data: {
           tweet: newTweet,
-          parent: updatedTweet,
+          child: updatedTweet,
         },
       });
     } else {
@@ -116,6 +125,55 @@ exports.createTweet = async (req, res) => {
         },
       });
     }
+  } catch (err) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Invalid data sent",
+      error: err,
+    });
+  }
+};
+
+// UNDO RETWEET
+exports.undoRetweet = async (req, res) => {
+  console.log("undoRetweet");
+  try {
+    const currentUserId = req.user._id;
+    const tweetId = req.body.retweetParent; //<-- ID of wrapper tweet/ parent.
+
+    const parentTweet = await Tweet.findById(tweetId);
+
+    // // 0. Get childTweet.
+    // const childTweet = await Tweet.findById(parentTweet.retweetChild);
+
+    // 2. Remove user ID from child array (tweet that was retweeted).
+    const updatedChildTweet = await Tweet.findByIdAndUpdate(
+      parentTweet.retweetChild,
+      { $pull: { retweets: currentUserId } },
+      { new: true }
+    );
+
+    // const tweetId = req.body.retweetParent; //<-- ID of original tweet that was retweeted.
+
+    // 1. Remove childTweet from user's list of retweets.
+    const updatedUser = await User.findByIdAndUpdate(
+      currentUserId,
+      { $pull: { retweetedTweets: parentTweet.retweetChild } },
+      { new: true }
+    );
+
+    // 3. Delete parent tweet (wrapper tweet with no text content).
+    await Tweet.findByIdAndDelete(parentTweet._id);
+
+    res.status(201).json({
+      status: "Success. Undo retweet.",
+      data: {
+        // tweet: newTweet,
+        // replyParent,
+        updatedUser,
+        updatedChildTweet,
+      },
+    });
   } catch (err) {
     res.status(400).json({
       status: "Fail",

@@ -10,6 +10,12 @@ router
   .post(authController.protect, tweetController.createTweet);
 
 router
+  .route("/undoRetweet")
+  .post(authController.protect, tweetController.undoRetweet);
+
+router.route("/user/:userId").get(tweetController.getTweetsByUser);
+
+router
   .route("/:id")
   .get(tweetController.getTweet)
   .patch(tweetController.updateTweet)
@@ -20,8 +26,6 @@ router
   .get(authController.protect, tweetController.getReplies);
 // .delete(authController.protect, tweetController.deleteReply);
 
-router.route("/user/:userId").get(tweetController.getTweetsByUser);
-
 router
   .route("/:id/like")
   .patch(authController.protect, tweetController.likeTweet);
@@ -30,6 +34,6 @@ router
   .route("/:id/unlike")
   .patch(authController.protect, tweetController.unlikeTweet);
 
-// router.route("/retweet").post(authController.project, tweetController.retweet);
+// router.route("/retweet").post(authController.protect, tweetController.retweet);
 
 module.exports = router;

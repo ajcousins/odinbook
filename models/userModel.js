@@ -61,6 +61,7 @@ const userSchema = new mongoose.Schema(
       default: "default.jpg",
     },
     likedTweets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tweet" }],
+    retweetedTweets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tweet" }],
   },
   {
     toJSON: { virtuals: true },
