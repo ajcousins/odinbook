@@ -22,7 +22,7 @@ exports.getAllTweets = async (req, res) => {
     .sort("-dateAdded")
     .populate("user")
     .populate({ path: "retweetChild", populate: { path: "user" } })
-    // .populate("retweetChild")
+    // .populate("retweetedTweets")
     .exec();
 
   res.status(200).json({
@@ -78,15 +78,16 @@ exports.createTweet = async (req, res) => {
     if (req.body.retweetChild) {
       const currentUserId = req.user._id;
 
-      // Add tweet to user's list of retweets
-      const updatedUser = await User.findByIdAndUpdate(
-        currentUserId,
-        { $addToSet: { retweetedTweets: req.body.retweetChild } },
-        { new: true }
-      );
-
       // RETWEET
       const newTweet = await Tweet.create(req.body);
+
+      // Add tweet to user's list of retweets
+      // Should add resulting parent tweet- as this can be populated and can also have access to child.
+      const updatedUser = await User.findByIdAndUpdate(
+        currentUserId,
+        { $addToSet: { retweetedTweets: newTweet } },
+        { new: true }
+      );
 
       // Add user id to retweet array of child.
       const updatedTweet = await Tweet.findByIdAndUpdate(
@@ -102,6 +103,7 @@ exports.createTweet = async (req, res) => {
         data: {
           tweet: newTweet,
           child: updatedTweet,
+          updatedUser,
         },
       });
     } else {
@@ -158,7 +160,7 @@ exports.undoRetweet = async (req, res) => {
     // 1. Remove childTweet from user's list of retweets.
     const updatedUser = await User.findByIdAndUpdate(
       currentUserId,
-      { $pull: { retweetedTweets: parentTweet.retweetChild } },
+      { $pull: { retweetedTweets: req.body.retweetParent } },
       { new: true }
     );
 
