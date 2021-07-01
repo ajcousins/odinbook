@@ -8,8 +8,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "devstart": "nodemon server.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix public && npm run build --prefix public"
+    "devstart": "nodemon server.js"
   },
   "author": "Alvin Cousins",
   "license": "ISC",
