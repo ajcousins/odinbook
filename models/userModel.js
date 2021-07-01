@@ -16,7 +16,6 @@ const userSchema = new mongoose.Schema(
       minlength: 1,
       maxlength: 20,
       trim: true,
-      // unique: [true, "Handle already exists"],
     },
     email: {
       type: String,

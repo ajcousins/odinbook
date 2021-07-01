@@ -24,7 +24,6 @@ router
 router
   .route("/:id/replies")
   .get(authController.protect, tweetController.getReplies);
-// .delete(authController.protect, tweetController.deleteReply);
 
 router
   .route("/:id/like")
@@ -33,7 +32,5 @@ router
 router
   .route("/:id/unlike")
   .patch(authController.protect, tweetController.unlikeTweet);
-
-// router.route("/retweet").post(authController.protect, tweetController.retweet);
 
 module.exports = router;

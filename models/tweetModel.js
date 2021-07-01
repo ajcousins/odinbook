@@ -79,10 +79,6 @@ tweetSchema.virtual("retweets_short").get(function () {
   return numberFormat(this.retweets);
 });
 
-// tweetSchema.virtual("likes_short").get(function () {
-//   return numberFormat(this.likes);
-// });
-
 const numberFormat = (prop) => {
   let quantity = prop;
   return quantity > 999 ? Math.floor(quantity / 1000) + "K" : quantity;

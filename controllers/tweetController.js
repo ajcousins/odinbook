@@ -4,10 +4,6 @@ const User = require("../models/userModel");
 // GET ALL
 exports.getAllTweets = async (req, res) => {
   const currentUser = req.user;
-  console.log("currentUser:", currentUser);
-
-  // // Get all tweets from ALL users. Temporary.
-  // const tweets = await Tweet.find().sort("-dateAdded").populate("user");
 
   // Get all tweets from users being followed by currentUser.
   const broadcast = currentUser.following;
@@ -22,7 +18,6 @@ exports.getAllTweets = async (req, res) => {
     .sort("-dateAdded")
     .populate("user")
     .populate({ path: "retweetChild", populate: { path: "user" } })
-    // .populate("retweetedTweets")
     .exec();
 
   res.status(200).json({
@@ -142,22 +137,16 @@ exports.undoRetweet = async (req, res) => {
   try {
     const currentUserId = req.user._id;
     const tweetId = req.body.retweetParent; //<-- ID of wrapper tweet/ parent.
-
     const parentTweet = await Tweet.findById(tweetId);
 
-    // // 0. Get childTweet.
-    // const childTweet = await Tweet.findById(parentTweet.retweetChild);
-
-    // 2. Remove user ID from child array (tweet that was retweeted).
+    // 1. Remove user ID from child array (tweet that was retweeted).
     const updatedChildTweet = await Tweet.findByIdAndUpdate(
       parentTweet.retweetChild,
       { $pull: { retweets: currentUserId } },
       { new: true }
     );
 
-    // const tweetId = req.body.retweetParent; //<-- ID of original tweet that was retweeted.
-
-    // 1. Remove childTweet from user's list of retweets.
+    // 2. Remove childTweet from user's list of retweets.
     const updatedUser = await User.findByIdAndUpdate(
       currentUserId,
       { $pull: { retweetedTweets: req.body.retweetParent } },
@@ -170,8 +159,6 @@ exports.undoRetweet = async (req, res) => {
     res.status(201).json({
       status: "Success. Undo retweet.",
       data: {
-        // tweet: newTweet,
-        // replyParent,
         updatedUser,
         updatedChildTweet,
       },
