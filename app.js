@@ -40,7 +40,8 @@ app.use("/api/v1/tweets", tweetRouter);
 
 app.all("*", (req, res, next) => {
   // If anything is passed into next(), express assumes it is an error and skip all other middlewares.
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  // next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  res.sendFile(path.join(__dirname + "/public/build/index.html"));
 });
 
 app.use(globalErrorHandler);
