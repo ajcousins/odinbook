@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const path = require("path");
 const AppError = require("./utils/appError");
 const compression = require("compression");
 const helmet = require("helmet");
@@ -38,10 +39,20 @@ app.use("/tweets/", authController.protect, tweetRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/tweets", tweetRouter);
 
+// Serve static assets if in production
+if (process.env.NODE_ENV === "producton") {
+  // Set static folder
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "public", "build", "index.html"));
+  });
+}
+
 app.all("*", (req, res, next) => {
   // If anything is passed into next(), express assumes it is an error and skip all other middlewares.
-  // next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
-  res.sendFile(path.join(__dirname + "/public/build/index.html"));
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  // res.sendFile(path.join(__dirname + "/public/build/index.html"));
 });
 
 app.use(globalErrorHandler);
