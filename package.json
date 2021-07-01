@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node server.js",
     "devstart": "nodemon server.js",
-    "heroku-postbuild": "cd public/odinbook-react && npm install && npm run build"
+    "heroku-postbuild": "cd public && npm install && npm run build"
   },
   "author": "Alvin Cousins",
   "license": "ISC",
