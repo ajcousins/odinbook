@@ -52,8 +52,8 @@ function App() {
           setCurUserRetweets(curUserRetweetsCopy);
         }
       } catch (err) {
-        console.log(err);
         setIsAuth(false);
+        throw err;
       }
     }
     fetchData();
