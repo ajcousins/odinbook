@@ -35,7 +35,9 @@ const Login = (props) => {
       });
   };
 
-  const clickHandler = () => {
+  const clickHandler = (e) => {
+    if (e) e.preventDefault();
+
     if (formActive) setFormActive(false);
     else setFormActive(true);
   };

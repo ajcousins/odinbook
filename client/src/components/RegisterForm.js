@@ -24,11 +24,14 @@ const RegisterForm = (props) => {
     validateDetails();
   };
 
-  const nextPage = () => {
+  const nextPage = (e) => {
+    if (e) e.preventDefault();
+
     setPage(page + 1);
   };
 
-  const prevPage = () => {
+  const prevPage = (e) => {
+    if (e) e.preventDefault();
     setPage(page - 1);
   };
 

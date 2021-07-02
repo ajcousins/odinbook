@@ -34,7 +34,7 @@ exports.resizeUserPhoto = (req, res, next) => {
     .resize(400, 400)
     .toFormat("jpeg")
     .jpeg({ quality: 90 })
-    .toFile(`public/img/users/${req.file.filename}`);
+    .toFile(`client/public/img/users/${req.file.filename}`);
 
   next();
 };
