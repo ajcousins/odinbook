@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import SvgTwitterLogo from "./../iconComponents/SvgTwitterLogo";
 import RegisterForm from "./RegisterForm";
+import ImageUploadTest from "./ImageUploadTest";
 
 const Login = (props) => {
   const [input, setInput] = useState({});
@@ -81,6 +82,7 @@ const Login = (props) => {
           </button>
         </div>
       </form>
+      <ImageUploadTest />
     </div>
   );
 };
