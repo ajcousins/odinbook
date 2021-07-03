@@ -40,14 +40,12 @@ router
   .route("/:id/following")
   .get(authController.protect, userController.followingList);
 
-router
-  .route("/updateUser")
-  .post(
-    authController.protect,
-    userController.uploadUserPhoto,
-    userController.resizeUserPhoto,
-    userController.updateUser
-  );
+router.route("/updateUser").post(
+  authController.protect,
+  // userController.uploadUserPhoto,
+  // userController.resizeUserPhoto,
+  userController.updateUser
+);
 
 router.route("/redundantPhotos").post(userController.redundantPhotos);
 

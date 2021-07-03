@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Storage } from "aws-amplify";
 import axios from "axios";
 import SvgBackArrow from "./../iconComponents/SvgBackArrow";
 
@@ -17,14 +18,32 @@ const MainFeedUserUpdate = (props) => {
     setUserInfo(userInfoCopy);
   };
 
-  const saveHandler = () => {
-    const form = new FormData();
-    form.append("name", userInfo.name);
-    form.append("bio", userInfo.bio);
-    form.append("photo", document.getElementById("photo").files[0]);
+  const saveHandler = async () => {
+    const form = {};
+    form.name = userInfo.name;
+    form.bio = userInfo.bio;
+    // form.append("photo", document.getElementById("photo").files[0]);
+
+    // 1. Generate filename/ key
+    const newFilename = `user-${props.currentUser._id}-${Date.now()}.jpeg`;
+
+    // 2. Pass filename/key to database update
+    // form.append("photo", newFilename);
+
+    // console.log("form", form);
+
+    // 3. Save file to AWS storage
+    if (document.getElementById("photo").files[0]) {
+      const file = document.getElementById("photo").files[0];
+      const result = await Storage.put(newFilename, file);
+      console.log("result: ", result);
+      form.photo = newFilename;
+      props.fetchImages();
+    }
 
     axios.post("/api/v1/users/updateUser", form).then(
       (res) => {
+        console.log(res);
         props.refreshCurrentUser();
         props.refreshSelectedUser();
         props.changePage(1);
@@ -36,6 +55,7 @@ const MainFeedUserUpdate = (props) => {
   };
 
   const saveBtn = () => {
+    // console.log("saveBtn: ", e);
     return (
       <button className='btn--save' onClick={saveHandler}>
         Save
@@ -49,9 +69,6 @@ const MainFeedUserUpdate = (props) => {
         <SvgBackArrow height='22.5px' changePage={() => props.changePage(1)} />
         <div className='mainfeed__header__col-2'>
           <div className='mainfeed__header__text'>{props.currentUser.name}</div>
-          {/* <span className='mainfeed__user__tweets'>
-            {userTweets ? userTweets.length : "0"} Tweets
-          </span> */}
         </div>
       </div>
       <div className='mainfeed__banner'>
@@ -71,10 +88,10 @@ const MainFeedUserUpdate = (props) => {
           <input
             className='register__upload'
             type='file'
+            // onChange={changeHandler}
             accept='image/*'
             id='photo'
             name='photo'
-            // style={{ display: "none" }}
           />
         </div>
         <div className='update-user__bio__row-2'>
@@ -86,7 +103,6 @@ const MainFeedUserUpdate = (props) => {
             placeholder='Full Name'
           />
 
-          {/* <h2 className='mainfeed__user-title'>{props.currentUser.name}</h2> */}
           <p>@{props.currentUser.handle}</p>
         </div>
         <div className='mainfeed__bio__row-3'>
@@ -101,24 +117,7 @@ const MainFeedUserUpdate = (props) => {
             {userInfo.bio ? userInfo.bio.length : "0"}/160
           </div>
         </div>
-        <div className='mainfeed__bio__row-5'>
-          {/* <Follows
-            type='Following '
-            number={props.selectedUser.following_length}
-            page={2}
-            changePage={props.changePage}
-            refreshCurrentUser={props.refreshCurrentUser}
-            refreshSelectedUser={props.refreshSelectedUser}
-          /> */}
-          {/* <Follows
-            type='Followers '
-            number={followerListLength}
-            page={3}
-            changePage={props.changePage}
-            refreshCurrentUser={props.refreshCurrentUser}
-            refreshSelectedUser={props.refreshSelectedUser}
-          /> */}
-        </div>
+        <div className='mainfeed__bio__row-5'></div>
       </div>
     </div>
   );

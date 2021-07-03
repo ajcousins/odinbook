@@ -112,28 +112,30 @@ exports.createUser = async (req, res) => {
   }
 };
 
-// UPDATE ONE
-exports.updateUser = async (req, res) => {
-  try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+// // UPDATE ONE
+// exports.updateUser = async (req, res) => {
+//   try {
+//     console.log("Update User");
+//     console.log("req.body: ", req.body);
+//     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+//       new: true,
+//       runValidators: true,
+//     });
 
-    res.status(201).json({
-      status: "Success",
-      data: {
-        updatedUser,
-      },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "Fail",
-      message: "Invalid data sent",
-      error: err,
-    });
-  }
-};
+//     res.status(201).json({
+//       status: "Success",
+//       data: {
+//         updatedUser,
+//       },
+//     });
+//   } catch (err) {
+//     res.status(400).json({
+//       status: "Fail",
+//       message: "Invalid data sent",
+//       error: err,
+//     });
+//   }
+// };
 
 // DELETE ONE
 exports.deleteUser = async (req, res) => {
@@ -304,8 +306,8 @@ exports.updateUser = async (req, res, next) => {
     }
 
     // 2) Filtered out unwanted fields names that are not allowed to be updated
-    const filteredBody = filterObj(req.body, "name", "email", "bio");
-    if (req.file) filteredBody.photo = req.file.filename;
+    const filteredBody = filterObj(req.body, "name", "email", "bio", "photo");
+    // if (req.file) filteredBody.photo = req.file.filename;
 
     // 3) Update user document
     const updatedUser = await User.findByIdAndUpdate(

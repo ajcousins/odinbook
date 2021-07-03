@@ -115,7 +115,7 @@ const Tweet = (props) => {
       <div className='tweet__col-1'>
         <img
           className='btn tweet__avatar'
-          src={`img/users/${props.profilePic}`}
+          src={props.imgToUrl(props.profilePic)}
           alt={`${props.name}`}
         />
       </div>

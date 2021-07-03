@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Storage } from "aws-amplify";
 import "./App.scss";
 import MenuPopUp from "./components/MenuPopUp";
 import LeftSideBar from "./components/LeftSideBar";
@@ -18,6 +19,36 @@ function App() {
   const [curUserRetweets, setCurUserRetweets] = useState([]);
   const [menuVis, setMenuVis] = useState(false);
   const [page, setPage] = useState(0);
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    // Fetch images on load.
+    fetchImages();
+  }, []);
+
+  const fetchImages = async () => {
+    // Keys that we get here are keys that we pass in as a name
+    let imageKeys = await Storage.list("");
+    console.log("ImageKeys 1: ", imageKeys);
+    // For secure access we need to sign each key which gives it a temporary url, which allows us to render in our app.
+    imageKeys = await Promise.all(
+      imageKeys.map(async (k) => {
+        const signedUrl = await Storage.get(k.key);
+        // Return signed version of key.
+        const imgObj = { key: k.key, signedUrl };
+        return imgObj;
+      })
+    );
+    console.log("ImageKeys 2: ", imageKeys);
+    setImages(imageKeys);
+  };
+
+  const imgToUrl = (filename) => {
+    if (!images) return;
+    const index = images.findIndex((image) => image.key === filename);
+    if (index < 0) return;
+    return images[index].signedUrl;
+  };
 
   const tokenHandler = (token) => {
     let tokenCopy = token;
@@ -218,6 +249,7 @@ function App() {
             currentUser={currentUser}
             changePage={changePage}
             fetchUser={fetchUser}
+            imgToUrl={imgToUrl}
           />
           <MainFeed
             header={header}
@@ -234,8 +266,10 @@ function App() {
             fetchTweet={fetchTweet}
             selectedTweet={selectedTweet}
             curUserRetweets={curUserRetweets}
+            fetchImages={fetchImages}
+            imgToUrl={imgToUrl}
           />
-          <RightSideBar fetchUser={fetchUser} />
+          <RightSideBar fetchUser={fetchUser} imgToUrl={imgToUrl} />
         </div>
       </div>
     );

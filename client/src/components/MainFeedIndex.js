@@ -94,6 +94,7 @@ const MainFeedIndex = (props) => {
                     retweetTweet={props.retweetTweet}
                     fetchTweet={props.fetchTweet}
                     tweetHandler={tweetHandler}
+                    imgToUrl={props.imgToUrl}
                   />
                 </div>
               ) : (
@@ -117,6 +118,7 @@ const MainFeedIndex = (props) => {
                   retweetTweet={props.retweetTweet}
                   fetchTweet={props.fetchTweet}
                   tweetHandler={tweetHandler}
+                  imgToUrl={props.imgToUrl}
                 />
               )}
             </div>
