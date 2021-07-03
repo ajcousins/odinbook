@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { Storage } from "aws-amplify";
 
+// Tutorial
+// https://www.youtube.com/watch?v=LWhnS5elz4o
+
 const ImageUploadTest = () => {
   const [images, setImages] = useState([]);
 

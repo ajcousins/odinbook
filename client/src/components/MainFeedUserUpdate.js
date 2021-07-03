@@ -36,6 +36,7 @@ const MainFeedUserUpdate = (props) => {
     if (document.getElementById("photo").files[0]) {
       const file = document.getElementById("photo").files[0];
       const result = await Storage.put(newFilename, file);
+      console.log("file: ", file);
       console.log("result: ", result);
       form.photo = newFilename;
       props.fetchImages();
