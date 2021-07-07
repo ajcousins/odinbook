@@ -1,13 +1,19 @@
+const aws = require("aws-sdk");
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
+const multerS3 = require("multer-s3-transform");
 const sharp = require("sharp");
 const AppError = require("../utils/appError");
-const { findById } = require("./../models/userModel");
+// const { findById } = require("./../models/userModel");
 const User = require("./../models/userModel");
+// const { Stream } = require("stream");
 
 // Uploaded saved into memory as buffer. Accessible at req.file.buffer.
-const multerStorage = multer.memoryStorage();
+// const multerStorage = multer.memoryStorage();
+
+const s3 = new aws.S3({ apiVersion: "2006-03-01" });
+// Needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
 
 const multerFilter = (req, file, cb) => {
   // Test if uploaded file is an image. Pass true into callback function if image, otherwise false if not.
@@ -19,25 +25,81 @@ const multerFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage: multerStorage,
+  storage: multerS3({
+    s3: s3,
+    bucket: "odinbookb7cecf36981344ffaa9c96650af9d3fc102443-dev",
+    shouldTransform: function (req, file, cb) {
+      cb(null, /^image/i.test(file.mimetype));
+    },
+    transforms: [
+      {
+        id: "original",
+        key: function (req, file, cb) {
+          cb(null, req.filename);
+        },
+        transform: function (req, file, cb) {
+          cb(null, sharp().resize(400, 400).jpeg());
+        },
+      },
+    ],
+  }),
   fileFilter: multerFilter,
 });
 
 exports.uploadUserPhoto = upload.single("photo");
 
-exports.resizeUserPhoto = (req, res, next) => {
-  if (!req.file) return next();
-
-  req.file.filename = `user-${req.user._id}-${Date.now()}.jpeg`;
-
-  sharp(req.file.buffer)
-    .resize(400, 400)
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`img/users/${req.file.filename}`);
-  // .toFile(`client/public/img/users/${req.file.filename}`);
+exports.applyFilename = (req, res, next) => {
+  req.filename = `user-${req.user._id}-${Date.now()}.jpeg`;
 
   next();
+};
+
+// GET USER IMAGES
+exports.getUserImages = async (req, res, next) => {
+  try {
+    const bucket = "odinbookb7cecf36981344ffaa9c96650af9d3fc102443-dev";
+
+    aws.config.setPromisesDependency();
+    aws.config.update({
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: "eu-west-1",
+    });
+
+    // Retrieve list of object keys
+    const s3 = new aws.S3();
+    const response = await s3
+      .listObjectsV2({
+        Bucket: bucket,
+      })
+      .promise();
+
+    // Retrieve signed URLs
+    let imageKeys = await Promise.all(
+      response.Contents.map(async (k) => {
+        let url = await s3.getSignedUrlPromise("getObject", {
+          Bucket: bucket,
+          Key: k.Key,
+          Expires: 3600,
+        });
+        // console.log(url);
+        return { Key: k.Key, url };
+      })
+    );
+
+    res.status(200).json({
+      status: "Success",
+      data: {
+        imageKeys,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fail",
+      message: "Invalid data sent",
+      error: err,
+    });
+  }
 };
 
 // GET ALL
@@ -112,28 +174,28 @@ exports.createUser = async (req, res) => {
   }
 };
 
-// UPDATE ONE
-exports.updateUser = async (req, res) => {
-  try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+// // UPDATE ONE
+// exports.updateUser = async (req, res) => {
+//   try {
+//     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+//       new: true,
+//       runValidators: true,
+//     });
 
-    res.status(201).json({
-      status: "Success",
-      data: {
-        updatedUser,
-      },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "Fail",
-      message: "Invalid data sent",
-      error: err,
-    });
-  }
-};
+//     res.status(201).json({
+//       status: "Success",
+//       data: {
+//         updatedUser,
+//       },
+//     });
+//   } catch (err) {
+//     res.status(400).json({
+//       status: "Fail",
+//       message: "Invalid data sent",
+//       error: err,
+//     });
+//   }
+// };
 
 // DELETE ONE
 exports.deleteUser = async (req, res) => {
@@ -305,7 +367,7 @@ exports.updateUser = async (req, res, next) => {
 
     // 2) Filtered out unwanted fields names that are not allowed to be updated
     const filteredBody = filterObj(req.body, "name", "email", "bio");
-    if (req.file) filteredBody.photo = req.file.filename;
+    if (req.file) filteredBody.photo = req.filename;
 
     // 3) Update user document
     const updatedUser = await User.findByIdAndUpdate(

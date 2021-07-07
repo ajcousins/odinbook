@@ -21,6 +21,10 @@ router
 router.get("/whoToFollow", authController.protect, userController.whoToFollow);
 
 router
+  .route("/getUserImages")
+  .get(authController.protect, userController.getUserImages);
+
+router
   .route("/:id")
   .get(userController.getUser)
   .patch(userController.updateUser)
@@ -44,8 +48,8 @@ router
   .route("/updateUser")
   .post(
     authController.protect,
+    userController.applyFilename,
     userController.uploadUserPhoto,
-    userController.resizeUserPhoto,
     userController.updateUser
   );
 
