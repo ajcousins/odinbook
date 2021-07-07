@@ -30,7 +30,7 @@ const ComposeTweet = (props) => {
       <div className='tweet__col-1'>
         <img
           className='tweet__avatar'
-          src={`img/users/${props.currentUser.photo}`}
+          src={props.imgToUrl(props.currentUser.photo)}
           alt='user'
         />
       </div>

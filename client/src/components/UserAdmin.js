@@ -7,7 +7,7 @@ const UserAdmin = (props) => {
       <div className='leftsidebar__useradmin' onClick={props.menu}>
         <img
           className='leftsidebar__useradmin__avatar'
-          src={`img/users/${props.currentUser.photo}`}
+          src={props.imgToUrl(props.currentUser.photo)}
           alt={`${props.currentUser.name}`}
         />
         <div>

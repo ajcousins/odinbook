@@ -49,6 +49,7 @@ const MainFeedIndex = (props) => {
       <ComposeTweet
         currentUser={props.currentUser}
         tweetHandler={tweetHandler}
+        imgToUrl={props.imgToUrl}
       />
       <div className='mainfeed__divider' />
       {tweets.length === 0 ? (
@@ -94,6 +95,7 @@ const MainFeedIndex = (props) => {
                     retweetTweet={props.retweetTweet}
                     fetchTweet={props.fetchTweet}
                     tweetHandler={tweetHandler}
+                    imgToUrl={props.imgToUrl}
                   />
                 </div>
               ) : (
@@ -117,6 +119,7 @@ const MainFeedIndex = (props) => {
                   retweetTweet={props.retweetTweet}
                   fetchTweet={props.fetchTweet}
                   tweetHandler={tweetHandler}
+                  imgToUrl={props.imgToUrl}
                 />
               )}
             </div>

@@ -65,6 +65,7 @@ const MainFeedUserFollowing = (props) => {
                 fetchUser={props.fetchUser}
                 refreshSelectedUser={props.refreshSelectedUser}
                 key={user._id}
+                imgToUrl={props.imgToUrl}
               />
             );
           })

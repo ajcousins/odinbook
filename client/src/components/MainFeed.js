@@ -21,6 +21,7 @@ const MainFeed = (props) => {
           likeTweet={props.likeTweet}
           retweetTweet={props.retweetTweet}
           fetchTweet={props.fetchTweet}
+          imgToUrl={props.imgToUrl}
         />
       );
     case 1:
@@ -38,6 +39,7 @@ const MainFeed = (props) => {
           likeTweet={props.likeTweet}
           retweetTweet={props.retweetTweet}
           fetchTweet={props.fetchTweet}
+          imgToUrl={props.imgToUrl}
         />
       );
     case 2:
@@ -50,6 +52,7 @@ const MainFeed = (props) => {
           fetchUser={props.fetchUser}
           refreshCurrentUser={props.refreshCurrentUser}
           refreshSelectedUser={props.refreshSelectedUser}
+          imgToUrl={props.imgToUrl}
         />
       );
     case 3:
@@ -62,6 +65,7 @@ const MainFeed = (props) => {
           fetchUser={props.fetchUser}
           refreshCurrentUser={props.refreshCurrentUser}
           refreshSelectedUser={props.refreshSelectedUser}
+          imgToUrl={props.imgToUrl}
         />
       );
     case 4:
@@ -73,6 +77,8 @@ const MainFeed = (props) => {
           currentUser={props.currentUser}
           refreshCurrentUser={props.refreshCurrentUser}
           refreshSelectedUser={props.refreshSelectedUser}
+          fetchImages={props.fetchImages}
+          imgToUrl={props.imgToUrl}
         />
       );
     case 5:
@@ -87,6 +93,7 @@ const MainFeed = (props) => {
           retweetTweet={props.retweetTweet}
           fetchTweet={props.fetchTweet}
           curUserRetweets={props.curUserRetweets}
+          imgToUrl={props.imgToUrl}
         />
       );
     default:

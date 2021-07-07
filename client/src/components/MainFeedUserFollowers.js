@@ -64,6 +64,7 @@ const MainFeedUserFollowers = (props) => {
                 updateArray={updateArray}
                 fetchUser={props.fetchUser}
                 key={user._id}
+                imgToUrl={props.imgToUrl}
               />
             );
           })

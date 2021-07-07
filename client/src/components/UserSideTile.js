@@ -35,7 +35,7 @@ const UserSideTile = (props) => {
       <div className='userSideTile__col-1'>
         <img
           className='tweet__avatar'
-          src={`img/users/${props.user.photo}`}
+          src={props.imgToUrl(props.user.photo)}
           alt={`${props.user.name}`}
         />
       </div>

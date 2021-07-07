@@ -28,6 +28,7 @@ const MainFeedUserUpdate = (props) => {
         props.refreshCurrentUser();
         props.refreshSelectedUser();
         props.changePage(1);
+        props.fetchImages();
       },
       (err) => {
         console.log(err);
@@ -59,7 +60,7 @@ const MainFeedUserUpdate = (props) => {
           <label htmlFor='photo'>
             <img
               className='mainfeed__user-avatar update-user__avatar'
-              src={`img/users/${props.currentUser.photo}`}
+              src={props.imgToUrl(props.currentUser.photo)}
               alt={`${props.currentUser.name}`}
             />
           </label>

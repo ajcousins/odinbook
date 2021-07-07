@@ -18,6 +18,26 @@ function App() {
   const [curUserRetweets, setCurUserRetweets] = useState([]);
   const [menuVis, setMenuVis] = useState(false);
   const [page, setPage] = useState(0);
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    // Fetch images on load.
+    fetchImages();
+  }, []);
+
+  const fetchImages = async () => {
+    axios.get("/api/v1/users/getUserImages").then((res) => {
+      setImages([...res.data.data.imageKeys]);
+    });
+  };
+
+  const imgToUrl = (filename) => {
+    if (!images) return;
+    const index = images.findIndex((image) => image.Key === filename);
+    if (index < 0) return;
+    console.log("ImgToUrl!", images[index].url);
+    return images[index].url;
+  };
 
   const tokenHandler = (token) => {
     let tokenCopy = token;
@@ -50,6 +70,7 @@ function App() {
           setCurrentUser(currentUserCopy);
           setCurUserLikes(curUserLikesCopy);
           setCurUserRetweets(curUserRetweetsCopy);
+          fetchImages();
         }
       } catch (err) {
         setIsAuth(false);
@@ -218,6 +239,7 @@ function App() {
             currentUser={currentUser}
             changePage={changePage}
             fetchUser={fetchUser}
+            imgToUrl={imgToUrl}
           />
           <MainFeed
             header={header}
@@ -234,8 +256,10 @@ function App() {
             fetchTweet={fetchTweet}
             selectedTweet={selectedTweet}
             curUserRetweets={curUserRetweets}
+            fetchImages={fetchImages}
+            imgToUrl={imgToUrl}
           />
-          <RightSideBar fetchUser={fetchUser} />
+          <RightSideBar fetchUser={fetchUser} imgToUrl={imgToUrl} />
         </div>
       </div>
     );

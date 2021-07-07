@@ -32,7 +32,7 @@ const LeftSideBar = (props) => {
         </SideButton>
       </div>
 
-      <UserAdmin menu={props.menu} currentUser={props.currentUser} />
+      <UserAdmin menu={props.menu} currentUser={props.currentUser} imgToUrl={props.imgToUrl}/>
     </div>
   );
 };

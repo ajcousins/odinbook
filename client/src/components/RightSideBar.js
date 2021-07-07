@@ -5,7 +5,7 @@ import Signature from "./Signature";
 const RightSideBar = (props) => {
   return (
     <div className='rightsidebar'>
-      <WhoToFollow fetchUser={props.fetchUser} />
+      <WhoToFollow fetchUser={props.fetchUser} imgToUrl={props.imgToUrl} />
       <Signature />
     </div>
   );

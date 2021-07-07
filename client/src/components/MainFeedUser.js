@@ -176,7 +176,7 @@ const MainFeedUser = (props) => {
         <div className='mainfeed__user-avatar--wrapper'>
           <img
             className='mainfeed__user-avatar'
-            src={`img/users/${props.selectedUser.photo}`}
+            src={props.imgToUrl(props.selectedUser.photo)}
             alt={`${props.selectedUser.name}`}
           />
         </div>
@@ -255,6 +255,7 @@ const MainFeedUser = (props) => {
                     retweetTweet={props.retweetTweet}
                     fetchTweet={props.fetchTweet}
                     tweetHandler={tweetHandler}
+                    imgToUrl={props.imgToUrl}
                   />
                 </div>
               ) : (
@@ -278,6 +279,7 @@ const MainFeedUser = (props) => {
                   retweetTweet={props.retweetTweet}
                   fetchTweet={props.fetchTweet}
                   tweetHandler={tweetHandler}
+                  imgToUrl={props.imgToUrl}
                 />
               )}
             </div>
