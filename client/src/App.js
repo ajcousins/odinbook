@@ -26,9 +26,14 @@ function App() {
   }, []);
 
   const fetchImages = async () => {
-    axios.get("/api/v1/users/getUserImages").then((res) => {
-      setImages([...res.data.data.imageKeys]);
-    });
+    axios
+      .get("/api/v1/users/getUserImages")
+      .then((res) => {
+        setImages([...res.data.data.imageKeys]);
+      })
+      .catch((err) => {
+        console.log("Fetch Images:", err);
+      });
   };
 
   const imgToUrl = (filename) => {

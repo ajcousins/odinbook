@@ -24,25 +24,7 @@ router
   .route("/getUserImages")
   .get(authController.protect, userController.getUserImages);
 
-router
-  .route("/:id")
-  .get(userController.getUser)
-  .patch(userController.updateUser)
-  .delete(userController.deleteUser);
-
 router.route("/follow").post(authController.protect, userController.followUser);
-
-router
-  .route("/unfollow")
-  .post(authController.protect, userController.unfollowUser);
-
-router
-  .route("/:id/followers")
-  .get(authController.protect, userController.followersList);
-
-router
-  .route("/:id/following")
-  .get(authController.protect, userController.followingList);
 
 router
   .route("/updateUser")
@@ -53,6 +35,24 @@ router
     userController.updateUser
   );
 
-router.route("/redundantPhotos").post(userController.redundantPhotos);
+router
+  .route("/unfollow")
+  .post(authController.protect, userController.unfollowUser);
+
+router
+  .route("/:id")
+  .get(userController.getUser)
+  .patch(userController.updateUser)
+  .delete(userController.deleteUser);
+
+router
+  .route("/:id/followers")
+  .get(authController.protect, userController.followersList);
+
+router
+  .route("/:id/following")
+  .get(authController.protect, userController.followingList);
+
+// router.route("/redundantPhotos").post(userController.redundantPhotos);
 
 module.exports = router;
