@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import TextareaAutosize from "react-autosize-textarea";
 import SvgBackArrow from "./../iconComponents/SvgBackArrow";
@@ -8,7 +8,6 @@ import TwitterRetweet from "./../iconComponents/SvgTwitterRetweet";
 import TwitterLike from "./../iconComponents/SvgTwitterLike";
 import TwitterLikeActive from "./../iconComponents/SvgTwitterLikeActive";
 import TwitterShare from "./../iconComponents/SvgTwitterShare";
-import { useEffect } from "react/cjs/react.development";
 import LoadingTile from "./../components/LoadingTile";
 import Tweet from "./../components/Tweet";
 import removeDuplicates from "./../utils/removeDuplicates";
