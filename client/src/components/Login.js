@@ -48,6 +48,8 @@ const Login = (props) => {
         formActive={formActive}
         clickHandler={clickHandler}
         logOut={props.logOut}
+        fetchImages={props.fetchImages}
+        imgToUrl={props.imgToUrl}
       />
       <form className='login'>
         <SvgTwitterLogo height='40px' />

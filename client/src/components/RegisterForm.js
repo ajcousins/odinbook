@@ -3,6 +3,7 @@ import axios from "axios";
 import SvgTwitterLogo from "./../iconComponents/SvgTwitterLogo";
 import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
+import { useEffect } from "react/cjs/react.development";
 
 const RegisterForm = (props) => {
   const [input, setInput] = useState({});
@@ -16,6 +17,7 @@ const RegisterForm = (props) => {
   const [bioInput, setBioInput] = useState("");
   const [page, setPage] = useState(0);
   const [photo, setPhoto] = useState("default.jpg");
+  const [photosLoaded, setPhotosLoaded] = useState(false);
 
   const changeHandler = (e) => {
     let inputCopy = input;
@@ -32,6 +34,7 @@ const RegisterForm = (props) => {
 
   const prevPage = (e) => {
     if (e) e.preventDefault();
+    // if (page === 1) setPhotosLoaded(false);
     setPage(page - 1);
   };
 
@@ -115,12 +118,22 @@ const RegisterForm = (props) => {
         const photo = res.data.data.user.photo;
         setPhoto(photo);
         nextPage();
+        props.fetchImages();
+        // setPhotosLoaded(true);
       },
       (err) => {
         console.log(err);
       }
     );
   };
+
+  const { fetchImages } = props.fetchImages;
+
+  useEffect(() => {
+    if (fetchImages) {
+      setPhotosLoaded(true);
+    }
+  }, [fetchImages]);
 
   const bioChangeHandler = (e) => {
     if (e.target.value.length > 160) return;
@@ -143,6 +156,12 @@ const RegisterForm = (props) => {
       }
     );
   };
+
+  const handleImageLoaded = () => {
+    setPhotosLoaded(true);
+  };
+
+  const imageStyle = !photosLoaded ? { display: "none" } : {};
 
   if (!props.formActive) return null;
 
@@ -278,11 +297,15 @@ const RegisterForm = (props) => {
             <p>Not happy with your photo? If not, go back and reupload.</p>
 
             <div className='register__avatar-wrapper'>
-              <img
-                className='register__avatar-preview'
-                src={`img/users/${photo}`}
-                alt='user'
-              />
+              {photosLoaded ? (
+                <img
+                  className='register__avatar-preview'
+                  src={props.imgToUrl(photo)}
+                  alt='user'
+                  // style={imageStyle}
+                  // onLoad={handleImageLoaded}
+                />
+              ) : null}
             </div>
             <div className='btn__footer'>
               <button className='btn--skip' onClick={prevPage}>

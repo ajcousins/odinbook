@@ -220,7 +220,12 @@ function App() {
     // Login/ register screen
     return (
       <div className='App'>
-        <Login tokenHandler={tokenHandler} logOut={logOut} />
+        <Login
+          tokenHandler={tokenHandler}
+          logOut={logOut}
+          fetchImages={fetchImages}
+          imgToUrl={imgToUrl}
+        />
       </div>
     );
   } else {
