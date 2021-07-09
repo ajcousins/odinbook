@@ -8,7 +8,7 @@ const updateDatabase = (id, request) => {
       })
       .then(
         (res) => {
-          console.log(res);
+          // console.log(res);
         },
         (err) => {
           console.log(err);
@@ -21,7 +21,7 @@ const updateDatabase = (id, request) => {
       })
       .then(
         (res) => {
-          console.log(res);
+          // console.log(res);
         },
         (err) => {
           console.log(err);

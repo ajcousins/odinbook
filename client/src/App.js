@@ -40,7 +40,6 @@ function App() {
     if (!images) return;
     const index = images.findIndex((image) => image.Key === filename);
     if (index < 0) return;
-    console.log("ImgToUrl!", images[index].url);
     return images[index].url;
   };
 

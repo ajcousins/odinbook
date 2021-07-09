@@ -117,7 +117,6 @@ exports.getAllUsers = async (req, res) => {
 exports.currentUser = (req, res) => {
   try {
     const currentUser = req.user;
-    console.log(req.user);
 
     res.status(200).json({
       status: "Success",
@@ -352,9 +351,6 @@ exports.followingList = async (req, res) => {
 // UPDATE USER
 exports.updateUser = async (req, res, next) => {
   try {
-    console.log(req.file);
-    console.log(req.body);
-
     // 1) Create error if user POSTs password data
     if (req.body.password || req.body.passwordConfirm) {
       return next(
@@ -394,41 +390,6 @@ exports.updateUser = async (req, res, next) => {
   }
 };
 
-// Delete all redundant profile photos in filesystem
-exports.redundantPhotos = async (req, res) => {
-  try {
-    const allUsers = await User.find();
-    const photosInUse = allUsers.map((user) => user.photo);
-
-    const directoryPath = path.join(__dirname, "./../public/img/users");
-    fs.readdir(directoryPath, (err, files) => {
-      if (err) {
-        return console.log("Unable to scan directory: ", err);
-      }
-      files.forEach((file) => {
-        if (photosInUse.includes(file)) return;
-        if (file === "default.jpg") return;
-        else {
-          console.log(file);
-          fs.unlink(`${directoryPath}/${file}`, (err) => {
-            if (err) throw err;
-            console.log(file, "deleted");
-          });
-        }
-      });
-    });
-
-    res.status(201).json({
-      status: "Success",
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "Fail",
-      message: "Invalid data sent",
-      error: err,
-    });
-  }
-};
 
 // WHO TO FOLLOW
 // Get users that are not followed by currentUser. Order by activity (followers * tweets), limit by 5.

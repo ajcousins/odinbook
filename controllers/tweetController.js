@@ -133,7 +133,6 @@ exports.createTweet = async (req, res) => {
 
 // UNDO RETWEET
 exports.undoRetweet = async (req, res) => {
-  console.log("undoRetweet");
   try {
     const currentUserId = req.user._id;
     const tweetId = req.body.retweetParent; //<-- ID of wrapper tweet/ parent.
@@ -204,7 +203,6 @@ exports.deleteTweet = async (req, res) => {
   try {
     // Check if tweet has a replyParent.
     const tweet = await Tweet.findById(req.params.id);
-    console.log(tweet.replyParent);
 
     const parent = await Tweet.findByIdAndUpdate(
       tweet.replyParent,
@@ -237,9 +235,6 @@ exports.likeTweet = async (req, res) => {
   try {
     const currentUserId = req.user._id;
     const tweetId = req.params.id;
-
-    console.log("currentUserID", currentUserId);
-    console.log("tweetId", tweetId);
 
     // Add tweet to user's list of likes
     const updatedUser = await User.findByIdAndUpdate(

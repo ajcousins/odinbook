@@ -132,7 +132,7 @@ const MainFeedTweetExpand = (props) => {
             <div className='tweet-expanded__row-1'>
               <img
                 className='tweet__avatar'
-                src={`img/users/${selectedTweet.userDetails.photo}`}
+                src={props.imgToUrl(selectedTweet.userDetails.photo)}
                 alt={`${selectedTweet.userDetails.name}`}
               />
               <div className='tweet-expanded__row-1__col-2'>
@@ -179,7 +179,7 @@ const MainFeedTweetExpand = (props) => {
               <div className='tweet-expanded__reply__col-1'>
                 <img
                   className='tweet__avatar'
-                  src={`img/users/${props.currentUser.photo}`}
+                  src={props.imgToUrl(props.currentUser.photo)}
                   alt={`${props.currentUser.name}`}
                 />
               </div>
@@ -246,6 +246,7 @@ const MainFeedTweetExpand = (props) => {
                       retweetTweet={props.retweetTweet}
                       fetchTweet={props.fetchTweet}
                       tweetHandler={tweetHandler}
+                      imgToUrl={props.imgToUrl}
                     />
                   </div>
                 ) : (
@@ -271,6 +272,7 @@ const MainFeedTweetExpand = (props) => {
                     retweetTweet={props.retweetTweet}
                     fetchTweet={props.fetchTweet}
                     tweetHandler={tweetHandler}
+                    imgToUrl={props.imgToUrl}
                   />
                 )}
               </div>
