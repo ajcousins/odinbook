@@ -17,7 +17,7 @@ const RegisterForm = (props) => {
   const [bioInput, setBioInput] = useState("");
   const [page, setPage] = useState(0);
   const [photo, setPhoto] = useState("default.jpg");
-  const [photosLoaded, setPhotosLoaded] = useState(false);
+  // const [photosLoaded, setPhotosLoaded] = useState(false);
 
   const changeHandler = (e) => {
     let inputCopy = input;
@@ -127,13 +127,13 @@ const RegisterForm = (props) => {
     );
   };
 
-  const { fetchImages } = props.fetchImages;
+  // const { fetchImages } = props.fetchImages;
 
-  useEffect(() => {
-    if (fetchImages) {
-      setPhotosLoaded(true);
-    }
-  }, [fetchImages]);
+  // useEffect(() => {
+  //   if (fetchImages) {
+  //     setPhotosLoaded(true);
+  //   }
+  // }, [fetchImages]);
 
   const bioChangeHandler = (e) => {
     if (e.target.value.length > 160) return;
@@ -157,11 +157,11 @@ const RegisterForm = (props) => {
     );
   };
 
-  const handleImageLoaded = () => {
-    setPhotosLoaded(true);
-  };
+  // const handleImageLoaded = () => {
+  //   setPhotosLoaded(true);
+  // };
 
-  const imageStyle = !photosLoaded ? { display: "none" } : {};
+  // const imageStyle = !photosLoaded ? { display: "none" } : {};
 
   if (!props.formActive) return null;
 
@@ -297,15 +297,13 @@ const RegisterForm = (props) => {
             <p>Not happy with your photo? If not, go back and reupload.</p>
 
             <div className='register__avatar-wrapper'>
-              {photosLoaded ? (
-                <img
-                  className='register__avatar-preview'
-                  src={props.imgToUrl(photo)}
-                  alt='user'
-                  // style={imageStyle}
-                  // onLoad={handleImageLoaded}
-                />
-              ) : null}
+              <img
+                className='register__avatar-preview'
+                src={props.imgToUrl(photo)}
+                alt='user'
+                // style={imageStyle}
+                // onLoad={handleImageLoaded}
+              />
             </div>
             <div className='btn__footer'>
               <button className='btn--skip' onClick={prevPage}>
