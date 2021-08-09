@@ -11,7 +11,7 @@ const WhoToFollow = (props) => {
   }, []);
 
   const getNotFollowing = async () => {
-    await axios.get("/api/v1/users/whoToFollow?limit=5").then((res) => {
+    await axios.get("/api/v1/users/whoToFollow").then((res) => {
       const usersToFollowCopy = [...res.data.whoToFollow];
       setUsersToFollow(usersToFollowCopy);
     });
