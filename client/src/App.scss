@@ -73,7 +73,7 @@ button {
 
 .link-btn {
   width: auto;
-  margin-top: 2em;
+  margin-top: 0.5em;
   background-color: white;
   text-decoration: none;
   color: $twitter-link;
@@ -235,9 +235,9 @@ strong {
 
   &__footer {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: flex-end;
-    height: 5em;
+    align-items: center;
     font-size: 0.9rem;
   }
 
