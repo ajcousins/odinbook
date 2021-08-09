@@ -3,6 +3,7 @@ import axios from "axios";
 import Tweet from "./../components/Tweet";
 import ComposeTweet from "./../components/ComposeTweet";
 import LoadingTile from "./../components/LoadingTile";
+import WhoToFollowMain from "./../components/WhoToFollowMain";
 import MessageTile from "./MessageTile";
 import SvgTwitterRetweet from "./../iconComponents/SvgTwitterRetweet";
 import removeDuplicates from "./../utils/removeDuplicates";
@@ -53,10 +54,13 @@ const MainFeedIndex = (props) => {
       />
       <div className='mainfeed__divider' />
       {tweets.length === 0 ? (
-        <MessageTile
-          heading={"Welcome to Twittr!"}
-          message="This is the best place to see what's happening in your world. Find some people to follow now."
-        />
+        <div>
+          <MessageTile
+            heading={"Welcome to Twittr!"}
+            message="This is the best place to see what's happening in your world. Find some people to follow now."
+          />
+          <WhoToFollowMain />
+        </div>
       ) : null}
       {!props.isLoaded ? (
         <LoadingTile />

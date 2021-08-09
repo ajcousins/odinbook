@@ -390,11 +390,13 @@ exports.updateUser = async (req, res, next) => {
   }
 };
 
-
 // WHO TO FOLLOW
 // Get users that are not followed by currentUser. Order by activity (followers * tweets), limit by 5.
 exports.whoToFollow = async (req, res) => {
   try {
+    const limit = req.query.limit;
+    console.log("params:", limit);
+
     const currentUser = req.user;
 
     const allUsers = await User.find().select(
@@ -417,8 +419,8 @@ exports.whoToFollow = async (req, res) => {
         else return 0;
       })
 
-      // Limit by 10.
-      .slice(0, 10);
+      // Set limit.
+      .slice(0, limit);
 
     res.status(201).json({
       status: "Success",
