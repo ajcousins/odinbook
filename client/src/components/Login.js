@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SvgTwitterLogo from "./../iconComponents/SvgTwitterLogo";
 import RegisterForm from "./RegisterForm";
@@ -8,6 +8,7 @@ const Login = (props) => {
   const [token, setToken] = useState("");
   const [formActive, setFormActive] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [runDemo, setRunDemo] = useState(false);
 
   const changeHandler = (e) => {
     let inputCopy = input;
@@ -41,6 +42,17 @@ const Login = (props) => {
     if (formActive) setFormActive(false);
     else setFormActive(true);
   };
+
+  const demoHandler = (e) => {
+    e.preventDefault();
+    setInput({ email: "51@twitter.com", password: "password" });
+    setRunDemo(true);
+  };
+
+  useEffect(() => {
+    if (input.email === "51@twitter.com") login();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runDemo]);
 
   return (
     <div className='wrapper-login'>
@@ -80,6 +92,14 @@ const Login = (props) => {
         <div className='login__footer'>
           <button className='link-btn' onClick={clickHandler}>
             Sign up for Twittr
+          </button>
+          <br />
+          <button
+            className='link-btn'
+            onClick={demoHandler}
+            style={{ marginTop: "-2em" }}
+          >
+            Sign in with a DEMO ACOUNT
           </button>
         </div>
       </form>
